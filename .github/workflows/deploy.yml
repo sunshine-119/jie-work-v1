@@ -22,12 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build H5
+      - name: UniApp Build H5
         run: npm run build:h5
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # uni-app H5 默认打包输出目录是 ./unpackage/dist/build/h5
           publish_dir: ./unpackage/dist/build/h5
