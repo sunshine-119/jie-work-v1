@@ -36,7 +36,7 @@
   },
   "h5": {
     "title": "给她的小厨房",
-    "router": { "mode": "hash", "base": "./" },
+    "router": { "mode": "hash", "base": "/jie-work-v1/" },
     "devServer": {
       "port": 500,
       "https": false
