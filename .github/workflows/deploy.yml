@@ -32,12 +32,12 @@ jobs:
       - name: UniApp Build H5
         run: npm run build:h5
 
-      # - name: List build output
-      #   run: ls -la ./unpackage/dist/build/h5
+      - name: List build output
+        run: ls -la ./dist/build/h5
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./unpackage/dist/build/h5
+          publish_dir: ./dist/build/h5
           force_orphan: true
