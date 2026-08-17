@@ -10,23 +10,24 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       - name: UniApp Build H5
         run: npm run build:h5
 
-      - name: Check build output
-        run: ls -la ./unpackage/dist/build/h5
+      - name: List build dir
+        run: ls ./unpackage/dist/build/h5
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
