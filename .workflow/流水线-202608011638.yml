@@ -1,0 +1,57 @@
+version: "1.0"
+name: 构建、部署到自有主机
+displayName: 构建、部署到自有主机
+stages:
+- name: 构建
+  displayName: 构建
+  strategy: naturally
+  trigger: auto
+  steps:
+  - step: build@python
+    name: ""
+    displayName: Python 构建
+    pythonVersion: "3.9"
+    commands:
+    - pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    - '# 可以使用pip下载依赖'
+    - '# pip install --user -r requirements.txt'
+    - python --version
+    artifacts:
+    - name: BUILD_ARTIFACT
+      path:
+      - ./
+      type: .tar.gz
+    notify: []
+    strategy:
+      retry: "0"
+      resource:
+        cpu: "2"
+        memory: "4"
+- name: 部署
+  displayName: 部署
+  strategy: naturally
+  trigger: auto
+  steps:
+  - step: deploy@agent
+    name: ""
+    displayName: 主机部署
+    deployArtifact:
+    - name: output
+      target: "~/gitee_go/deploy"
+      source: build
+      dependArtifact: BUILD_ARTIFACT
+      artifactRepository: default
+      artifactName: output
+      artifactVersion: latest
+    script: |-
+      # 请在此输入部署脚本，如启动Java应用如下
+      # nohup java -jar test.jar &gt; nohup.out &amp;
+       echo 'Hello Gitee!'
+    notify: []
+    strategy:
+      retry: "0"
+triggers:
+  trigger: manual
+notify: []
+strategy:
+  blocking: true

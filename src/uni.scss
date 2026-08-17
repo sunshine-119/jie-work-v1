@@ -1,0 +1,106 @@
+/**
+ * uni-app 内置变量（部分常用）
+ */
+$uni-color-primary: #E89AA8;
+$uni-color-success: #7FB6A8;
+$uni-color-warning: #E8B86C;
+$uni-color-error: #E08B8B;
+
+$uni-text-color: #4A3F44;
+$uni-text-color-inverse: #FFFFFF;
+$uni-text-color-grey: #8A7D83;
+$uni-text-color-placeholder: #B8ACB2;
+$uni-text-color-disable: #D8CFD3;
+
+$uni-bg-color: #FFF8F2;
+$uni-bg-color-grey: #FBF1EA;
+$uni-bg-color-hover: #FBE7EC;
+$uni-bg-color-mask: rgba(74, 40, 60, 0.45);
+
+$uni-border-color: #F2E1E6;
+
+$uni-font-size-sm: 24rpx;
+$uni-font-size-base: 28rpx;
+$uni-font-size-lg: 32rpx;
+$uni-font-size-title: 36rpx;
+
+$uni-spacing-row-sm: 8rpx;
+$uni-spacing-row-base: 16rpx;
+$uni-spacing-col-sm: 16rpx;
+$uni-spacing-col-base: 24rpx;
+
+$uni-border-radius-sm: 8rpx;
+$uni-border-radius-base: 16rpx;
+$uni-border-radius-lg: 24rpx;
+$uni-border-radius-circle: 50%;
+
+/**
+ * 我们的小厨房 · 情侣干饭 设计令牌
+ * 主色：奶粉粉（soft milk pink）+ 米白（warm rice white）+ 淡芋紫（light taro purple）
+ * 风格：大圆角卡片、柔和阴影、可爱手绘美食图标、简约温馨不花哨
+ *
+ * 主题切换：颜色变量用 CSS 自定义属性实现，女友端暖色为默认，男友端冷色通过 .bf-theme 覆盖。
+ * SCSS 变量引用 CSS 变量，运行时切换主题时所有组件自动跟随。
+ */
+$brand-primary: var(--c-primary, #F5B6C1);       // 主色：奶粉粉（温柔不刺眼）
+$brand-primary-2: var(--c-primary-2, #FFD6DD);   // 渐变次色：浅奶粉
+$brand-primary-dark: var(--c-primary-dark, #E89AA8); // 深奶粉（按压态/强调）
+$brand-accent: var(--c-accent, #C8B6D9);         // 淡芋紫（点缀/标签）
+$brand-taro: var(--c-taro, #B8A2C7);             // 深芋紫（次要强调）
+$brand-mango: var(--c-mango, #FFE5B4);           // 米黄（暖点缀）
+$brand-cream: var(--c-cream, #FFF1E5);           // 米白暖色
+
+$color-success: #7FB6A8;       // 豆沙绿（柔和的成功色）
+$color-warning: #E8B86C;       // 暖橙黄
+$color-danger: #E08B8B;        // 柔粉红
+$color-info: #9C8A95;          // 灰紫
+
+$bg-page: var(--c-bg-page, #FFF8F2);             // 页面底色（米白）
+$bg-surface: #FFFFFF;          // 卡片白
+$bg-surface-alt: var(--c-bg-alt, #FFF0F3);       // 次级卡片（淡粉底）
+$bg-hover: var(--c-bg-hover, #FBE7EC);           // 按压底
+$bg-taro: var(--c-bg-taro, #F4EEF8);             // 芋紫底（用于点缀卡片）
+
+$text-1: #4A3F44;              // 主文字（暖深灰，不用纯黑）
+$text-2: #7A6D73;              // 次文字
+$text-3: #A89DA3;              // 辅助文字
+$text-4: #C9BFC4;              // 占位/禁用
+$text-inverse: #FFFFFF;
+
+$border-1: var(--c-border, #F2E1E6);             // 边框（淡粉灰）
+$divider: var(--c-divider, #FAEEF2);             // 分割线
+
+// 柔和阴影：粉色暖调，不用冷黑
+$shadow-card: 0 8rpx 24rpx rgba(245, 182, 193, 0.18);
+$shadow-float: 0 -8rpx 32rpx rgba(200, 182, 217, 0.12);
+$shadow-press: 0 4rpx 12rpx rgba(245, 182, 193, 0.28);
+
+$radius-sm: 12rpx;
+$radius-md: 20rpx;
+$radius-lg: 28rpx;
+$radius-xl: 40rpx;
+$radius-pill: 999rpx;
+
+$space-1: 8rpx;
+$space-2: 16rpx;
+$space-3: 24rpx;
+$space-4: 32rpx;
+$space-5: 48rpx;
+$space-6: 64rpx;
+
+// 标签类型颜色变量（映射到 CSS 自定义属性，运行时跟随主题切换）
+$tag-selected-bg: var(--c-tag-selected-bg, rgba(184, 162, 199, 0.15));
+$tag-selected-color: var(--c-tag-selected-color, #7b6ba3);
+$tag-selected-border: var(--c-tag-selected-border, #7b6ba3);
+
+$tag-warn-bg: var(--c-tag-warn-bg, rgba(224, 139, 139, 0.15));
+$tag-warn-color: var(--c-tag-warn-color, #c06868);
+$tag-warn-border: var(--c-tag-warn-border, #c06868);
+
+$tag-dislike-bg: var(--c-tag-dislike-bg, rgba(230, 180, 140, 0.15));
+$tag-dislike-color: var(--c-tag-dislike-color, #b87333);
+$tag-dislike-border: var(--c-tag-dislike-border, #b87333);
+
+$tag-info-bg: var(--c-tag-info-bg, #e3f4ed);
+$tag-info-color: var(--c-tag-info-color, #7fc4ac);
+$tag-info-border: var(--c-tag-info-border, #7fc4ac);

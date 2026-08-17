@@ -1,0 +1,47 @@
+{
+  "name": "给她的小厨房",
+  "appid": "wxe5bfaae3caedad17",
+  "description": "写给你的点餐小系统",
+  "versionName": "1.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": { "permissions": [] },
+      "ios": {},
+      "sdkConfigs": {}
+    }
+  },
+  "quickapp": {},
+  "mp-weixin": {
+    "appid": "wxe5bfaae3caedad17",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "postcss": true,
+      "minified": true
+    },
+    "usingComponents": true,
+    "lazyCodeLoading": "requiredComponents"
+  },
+  "h5": {
+    "title": "给她的小厨房",
+    "router": { "mode": "hash", "base": "./" },
+    "devServer": {
+      "port": 500,
+      "https": false
+    },
+    "async": { "loading": "AsyncLoading", "error": "AsyncError", "delay": 100, "timeout": 60000 }
+  },
+  "vueVersion": "3"
+}
