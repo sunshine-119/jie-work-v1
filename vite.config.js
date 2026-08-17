@@ -13,6 +13,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173
   },
+  base: "/jie-work-v1/",
   css: {
     preprocessorOptions: {
       scss: {
