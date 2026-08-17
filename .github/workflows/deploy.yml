@@ -14,23 +14,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 安装uniapp构建所需ubuntu系统库
+      - name: Install system libs
+        run: sudo apt-get update && sudo apt-get install libvips-dev -y
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
 
+      # 使用淘宝镜像加速
+      - name: Config npm registry
+        run: npm config set registry https://registry.npmmirror.com
+
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
+      # 增加--verbose输出详细构建报错
       - name: UniApp Build H5
-        run: npm run build:h5
+        run: npm run build:h5 -- --verbose
 
-      - name: List build dir
-        run: ls ./unpackage/dist/build/h5
+      - name: List build output
+        run: ls -la ./unpackage/dist/build/h5
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./unpackage/dist/build/h5
+          force_orphan: true
