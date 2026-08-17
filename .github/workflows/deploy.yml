@@ -18,12 +18,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: UniApp Build H5
         run: npm run build:h5
+
+      # 打印目录，确认打包产物是否生成（调试关键）
+      - name: Check build folder
+        run: ls -la ./unpackage/dist/build/h5
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
