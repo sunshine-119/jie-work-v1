@@ -8,15 +8,14 @@
       @click="onTab(item)"
     >
       <view class="icon-wrap">
-        <view v-if="current === item.key" class="icon-bg" />
-        <AppIcon
+        <view class="icon-bg" :class="{ show: current === item.key }" />
+        <text
           class="icon"
-          :name="current === item.key ? item.iconActive : item.icon"
-          size="40"
-          :color="current === item.key ? '#fff' : '#A89DA3'"
-        />
+          :class="{ active: current === item.key }"
+        >{{ current === item.key ? item.iconActive : item.icon }}</text>
       </view>
       <text class="label">{{ item.text }}</text>
+      <view class="indicator" :class="{ show: current === item.key }" />
     </view>
   </view>
 </template>
@@ -24,7 +23,6 @@
 <script setup>
 import { computed } from 'vue';
 import { useCoupleStore } from '@/store/couple';
-import AppIcon from './AppIcon.vue';
 
 defineProps({
   current: { type: String, default: 'index' }
@@ -51,13 +49,13 @@ function onTab(item) {
   right: 0;
   bottom: 0;
   z-index: 99;
-  height: calc(108rpx + env(safe-area-inset-bottom));
+  height: calc(120rpx + env(safe-area-inset-bottom));
   display: flex;
-  background: var(--c-bg-alt, #fafafa);
-  opacity: 0.96;
-  backdrop-filter: blur(20rpx);
-  box-shadow: 0 -2rpx 16rpx rgba(60, 30, 0, 0.04);
+  background: var(--c-bg-page, #fff);
+  border-top: 2rpx solid rgba(0, 0, 0, 0.04);
+  padding-bottom: env(safe-area-inset-bottom);
 }
+
 .tab {
   flex: 1;
   display: flex;
@@ -65,42 +63,89 @@ function onTab(item) {
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 10rpx 0;
+
   .icon-wrap {
     position: relative;
-    width: 72rpx;
-    height: 72rpx;
+    width: 80rpx;
+    height: 80rpx;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
+  // 选中时的柔和圆形背景（弹性缩放动画）
   .icon-bg {
     position: absolute;
-    width: 72rpx;
-    height: 72rpx;
+    width: 68rpx;
+    height: 68rpx;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--c-primary, #F5B6C1), var(--c-primary-2, #FFD6DD));
-    box-shadow: 0 4rpx 12rpx rgba(245, 182, 193, 0.4);
+    background: var(--c-primary, #F5B6C1);
+    opacity: 0.2;
+    transform: scale(0);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.25s ease;
+    &.show {
+      transform: scale(1);
+      opacity: 0.22;
+    }
   }
+
+  // emoji 图标
   .icon {
     position: relative;
     z-index: 1;
+    font-size: 44rpx;
     line-height: 1;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+    &.active {
+      transform: scale(1.08) translateY(-4rpx);
+    }
   }
+
   .label {
-    margin-top: 4rpx;
+    margin-top: 6rpx;
     font-size: 22rpx;
     color: $text-3;
     font-weight: 500;
-    transition: color 0.2s ease;
+    letter-spacing: 1rpx;
+    transition: all 0.25s ease;
   }
-  &.active {
-    .icon {
-      transform: translateY(-4rpx) scale(1.05);
+
+  // 底部指示条（pill 形状）
+  .indicator {
+    position: absolute;
+    bottom: 2rpx;
+    width: 28rpx;
+    height: 6rpx;
+    border-radius: 4rpx;
+    background: var(--c-primary, #F5B6C1);
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    &.show {
+      opacity: 1;
+      transform: scaleX(1);
     }
+  }
+
+  // 激活态文字
+  &.active {
     .label {
-      color: var(--c-primary-dark, $brand-primary-dark);
+      color: var(--c-primary-dark, #E89AA8);
       font-weight: 700;
+    }
+  }
+
+  // 按压反馈
+  &:active {
+    .icon {
+      transform: scale(0.92);
+    }
+    &.active .icon {
+      transform: scale(1.12) translateY(-2rpx);
     }
   }
 }

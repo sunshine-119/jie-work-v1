@@ -1,5 +1,17 @@
 <template>
+  <!-- 自定义 copy 图标：CSS 绘制两个重叠矩形（通用复制图标） -->
+  <view
+    v-if="name === 'copy'"
+    class="app-icon copy-icon"
+    :class="[spin ? 'spin' : '']"
+    :style="iconStyle"
+  >
+    <view class="copy-rect back" />
+    <view class="copy-rect front" />
+  </view>
+  <!-- 普通图标 -->
   <text
+    v-else
     class="app-icon"
     :class="[`icon-${name}`, spin ? 'spin' : '']"
     :style="style"
@@ -53,7 +65,6 @@ const MAP = {
   chart: '📊',
   clock: '⏰',
   flag: '🚩',
-  // 补充常用图标
   egg: '🥚',
   chopsticks: '🥢',
   loading: '⏳',
@@ -70,10 +81,8 @@ const MAP = {
   cat: '🐱',
   cook: '👨‍🍳',
   more: '⋯',
-  copy: '📋',
   brush: '🎨',
   font: '🅰️',
-  loading: '⏳',
   expand: '⛶',
   minimize: '◱'
 };
@@ -86,6 +95,21 @@ const style = computed(() => {
   if (props.color) s.color = props.color;
   return s;
 });
+
+// 自定义图标的尺寸 / 颜色样式
+const iconStyle = computed(() => {
+  const s = {};
+  if (props.size) {
+    const sz = typeof props.size === 'number' ? `${props.size}rpx` : props.size;
+    s.width = sz;
+    s.height = sz;
+  }
+  if (props.color) {
+    s.color = props.color;
+    s['--icon-color'] = props.color;
+  }
+  return s;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -96,6 +120,36 @@ const style = computed(() => {
   line-height: 1;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
 }
+
+/* ============ copy 图标：两个重叠矩形 ============ */
+.copy-icon {
+  position: relative;
+  width: 40rpx;
+  height: 40rpx;
+
+  .copy-rect {
+    position: absolute;
+    border: 3rpx solid var(--icon-color, currentColor);
+    border-radius: 4rpx;
+    background: transparent;
+  }
+  .copy-rect.back {
+    width: 20rpx;
+    height: 24rpx;
+    top: 4rpx;
+    left: 3rpx;
+    opacity: 0.55;
+  }
+  .copy-rect.front {
+    width: 20rpx;
+    height: 24rpx;
+    bottom: 6rpx;
+    right: 8rpx;
+    background: var(--icon-color, currentColor);
+    opacity: 0.95;
+  }
+}
+
 .icon-back {
   font-size: 1.35em;
   font-weight: 700;

@@ -2,7 +2,7 @@
   "name": "给她的小厨房",
   "appid": "wxe5bfaae3caedad17",
   "description": "写给你的点餐小系统",
-  "versionName": "1.1.0",
+  "versionName": "1.1.16",
   "versionCode": "100",
   "transformPx": false,
   "app-plus": {
@@ -36,7 +36,7 @@
   },
   "h5": {
     "title": "给她的小厨房",
-    "router": { "mode": "hash", "base": "/jie-work-v1/" },
+    "router": { "mode": "hash", "base": "./" },
     "devServer": {
       "port": 500,
       "https": false

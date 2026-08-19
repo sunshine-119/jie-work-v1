@@ -455,6 +455,40 @@
       @submit="handleUploadSubmit"
     />
 
+    <!-- 加入菜单确认弹窗 -->
+    <view
+      v-if="showAddToMenuConfirm"
+      class="confirm-mask"
+      @click="showAddToMenuConfirm = false"
+      @touchmove.stop.prevent
+    >
+      <view class="confirm-dialog" @click.stop @touchmove.stop.prevent>
+        <view class="confirm-icon">🍽️</view>
+        <view class="confirm-title">加入菜单？</view>
+        <view class="confirm-desc">
+          将「{{ pendingCustomPayload?.name }}」上传到菜单，{{ couple.partnerDisplayName }}就能看到啦
+        </view>
+        <view class="confirm-actions">
+          <view class="confirm-btn cancel" @click="showAddToMenuConfirm = false">
+            <text>先不了</text>
+          </view>
+          <view class="confirm-btn confirm" @click="confirmAddToMenu">
+            <text>加入菜单</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分类选择弹窗（加入菜单流程） -->
+    <CategoryPicker
+      v-model:visible="showCategoryPickerForMenu"
+      :categories="categories"
+      :current-value="selectedMenuCategoryId"
+      title="选择分类"
+      @change="onMenuCategoryPicked"
+      @open-add-category="onMenuAddCategory"
+    />
+
     <Toast />
 
     <!-- 标签颜色说明弹窗（中间弹出） -->
@@ -555,6 +589,7 @@ import DishEmoji from "@/components/DishEmoji.vue";
 import AddCategoryDialog from "@/components/AddCategoryDialog.vue";
 import ActionSheetPicker from "@/components/ActionSheetPicker.vue";
 import UploadDishDialog from "@/components/UploadDishDialog.vue";
+import CategoryPicker from "@/components/CategoryPicker.vue";
 import { useCartStore } from "@/store/cart";
 import {
   usePreferenceStore,
@@ -661,6 +696,13 @@ function openUploadDialog() {
 const dialogVisible = ref(false);
 const noteDish = ref(null); // null = 自定义模式；对象 = 给该菜备注
 
+// 自定义菜品加入菜单流程状态
+const pendingCustomPayload = ref(null); // 暂存自定义菜品数据
+const showAddToMenuConfirm = ref(false); // 确认是否加入菜单
+const showCategoryPickerForMenu = ref(false); // 选择分类弹窗
+const selectedMenuCategoryId = ref(null); // 用户选择的分类ID
+const pendingPickerAfterAddCat = ref(false); // 添加分类后是否重开选择器
+
 // 自定义 ActionSheetPicker 状态
 const showCookPickerVisible = ref(false);
 const currentCookItem = ref(null);
@@ -699,8 +741,15 @@ async function onCategoryAdded(newCat) {
   try {
     await dishStore.addCategory(newCat);
     toast.success(`已添加分类：${newCat.name}`);
+    // 加入菜单流程中，添加分类后自动提交
+    if (pendingPickerAfterAddCat.value) {
+      pendingPickerAfterAddCat.value = false;
+      showCategoryPickerForMenu.value = false;
+      onMenuCategoryPicked(newCat.id);
+    }
   } catch (e) {
     toast.error(e.message || "添加分类失败");
+    pendingPickerAfterAddCat.value = false;
   }
 }
 
@@ -835,8 +884,50 @@ function onDialogAdd(payload) {
       spicy: payload.spicy,
       dietNote: payload.dietNote,
     });
-    toast.success("已加入小餐车");
+    // toast.success("已加入小餐车");
+    // 提示是否加入菜单
+    pendingCustomPayload.value = payload;
+    showAddToMenuConfirm.value = true;
   }
+}
+
+/** 确认加入菜单 → 打开分类选择 */
+function confirmAddToMenu() {
+  showAddToMenuConfirm.value = false;
+  showCategoryPickerForMenu.value = true;
+  selectedMenuCategoryId.value = null;
+  pendingPickerAfterAddCat.value = false;
+}
+
+/** 选择分类后上传菜品 */
+async function onMenuCategoryPicked(categoryId) {
+  selectedMenuCategoryId.value = categoryId;
+  const payload = pendingCustomPayload.value;
+  if (!payload || !categoryId) {
+    showCategoryPickerForMenu.value = false;
+    return;
+  }
+  try {
+    await dishStore.createDish({
+      name: payload.name,
+      categoryId: categoryId,
+      spicy: payload.spicy,
+      price: 0,
+    });
+    toast.success("已加入菜单");
+  } catch (e) {
+    toast.error("加入菜单失败");
+  }
+  showCategoryPickerForMenu.value = false;
+  pendingCustomPayload.value = null;
+  selectedMenuCategoryId.value = null;
+}
+
+/** 加入菜单流程中添加新分类 */
+function onMenuAddCategory() {
+  showCategoryPickerForMenu.value = false;
+  pendingPickerAfterAddCat.value = true;
+  openAddCategory();
 }
 
 /** 处理 UploadDishDialog 提交 */
@@ -1719,6 +1810,79 @@ onPullDownRefresh(() => {
   transition: transform 0.2s ease;
   &:active {
     transform: scale(0.9);
+  }
+}
+
+/* 加入菜单确认弹窗 */
+.confirm-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 40, 60, 0.45);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+}
+.confirm-dialog {
+  width: 100%;
+  max-width: 580rpx;
+  background: #fff;
+  border-radius: $radius-xl;
+  padding: 48rpx 36rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: popIn 0.25s ease;
+}
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.confirm-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+.confirm-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: $text-1;
+  margin-bottom: 12rpx;
+}
+.confirm-desc {
+  font-size: 26rpx;
+  color: $text-3;
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 16rpx;
+}
+.confirm-actions {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+  width: 100%;
+}
+.confirm-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: $radius-pill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  &.cancel {
+    background: $bg-surface-alt;
+    color: $text-2;
+  }
+  &.confirm {
+    background: linear-gradient(135deg, var(--c-primary, #F5B6C1), var(--c-primary-2, #FFD6DD));
+    color: #fff;
+    box-shadow: $shadow-press;
+  }
+  &:active {
+    transform: scale(0.96);
+    opacity: 0.9;
   }
 }
 

@@ -1609,6 +1609,7 @@ async function changePartnerAvatar() {
     toast.success("头像已更新");
   } catch (e) {
     toast.hide();
+    if(e.errMsg === 'chooseImage:fail cancel') return;
     console.error("[changePartnerAvatar]", e);
     toast.error("上传失败");
   }
@@ -1842,6 +1843,8 @@ onPullDownRefresh(() => {
       border-radius: $radius-pill;
     }
     &.copyable {
+      font-size: 24rpx;
+      color: #fff;
       display: flex;
       align-items: center;
       gap: 6rpx;
