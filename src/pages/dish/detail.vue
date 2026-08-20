@@ -268,6 +268,17 @@
       title="选择分类"
       @change="onCatPicked"
       @add-category="onCategoryAdded"
+      @open-add-category="openAddCategoryFromPicker"
+    />
+
+    <!-- 添加分类弹窗 -->
+    <AddCategoryDialog
+      v-show="addCatVisible"
+      :visible="addCatVisible"
+      :existing-emojis="existingEmojis"
+      :existing-names="existingNames"
+      @update:visible="addCatVisible = $event"
+      @confirm="onAddCatConfirm"
     />
   </view>
 </template>
@@ -282,6 +293,7 @@ import ImageUploader from "@/components/ImageUploader.vue";
 import AppIcon from "@/components/AppIcon.vue";
 import Toast from "@/components/Toast.vue";
 import CategoryPicker from "@/components/CategoryPicker.vue";
+import AddCategoryDialog from "@/components/AddCategoryDialog.vue";
 import { useDishStore } from "@/store/dish";
 import { useCoupleStore } from "@/store/couple";
 import {
@@ -321,8 +333,16 @@ const form = ref({
 const isOwner = computed(() => couple.isGirlfriend);
 
 const showCatPicker = ref(false);
+const addCatVisible = ref(false);
 
 const allCategories = computed(() => dishStore.allCategories);
+
+const existingEmojis = computed(() =>
+  allCategories.value.filter((c) => c.icon).map((c) => c.icon)
+);
+const existingNames = computed(() =>
+  allCategories.value.filter((c) => c.name).map((c) => c.name)
+);
 
 // 组合过敏原选项：默认选项 + 自定义添加
 const allergenOptions = computed(() => {
@@ -375,6 +395,23 @@ async function onCategoryAdded(newCat) {
   try {
     await dishStore.addCategory(newCat);
     form.value.categoryId = newCat.id;
+  } catch (e) {
+    toast.error(e.message || "添加分类失败");
+  }
+}
+
+function openAddCategoryFromPicker() {
+  showCatPicker.value = false;
+  setTimeout(() => {
+    addCatVisible.value = true;
+  }, 260);
+}
+
+async function onAddCatConfirm(data) {
+  try {
+    await dishStore.addCategory(data);
+    form.value.categoryId = data.id;
+    toast.success(`已添加分类：${data.name}`);
   } catch (e) {
     toast.error(e.message || "添加分类失败");
   }

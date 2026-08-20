@@ -200,6 +200,17 @@
         title="选择分类"
         @change="onCategoryPicked"
         @add-category="onCategoryAdded"
+        @open-add-category="openAddCategoryFromPicker"
+      />
+
+      <!-- 添加分类弹窗 -->
+      <AddCategoryDialog
+        v-show="addCatVisible"
+        :visible="addCatVisible"
+        :existing-emojis="existingEmojis"
+        :existing-names="existingNames"
+        @update:visible="addCatVisible = $event"
+        @confirm="onAddCatConfirm"
       />
     </view>
   </view>
@@ -209,6 +220,7 @@
 import { ref, computed, watch } from 'vue';
 import ImageUploader from '@/components/ImageUploader.vue';
 import CategoryPicker from '@/components/CategoryPicker.vue';
+import AddCategoryDialog from '@/components/AddCategoryDialog.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import { useDishStore } from '@/store/dish';
 import { useCoupleStore } from '@/store/couple';
@@ -232,6 +244,7 @@ const preference = usePreferenceStore();
 
 const uploading = ref(false);
 const showCategoryPickerVisible = ref(false);
+const addCatVisible = ref(false);
 const spicyLabels = ["不辣", "微辣", "中辣", "重辣"];
 
 const form = ref({
@@ -272,6 +285,13 @@ function goToFullUpload() {
 }
 
 const categories = computed(() => dishStore.allCategories);
+
+const existingEmojis = computed(() =>
+  categories.value.filter((c) => c.icon).map((c) => c.icon)
+);
+const existingNames = computed(() =>
+  categories.value.filter((c) => c.name).map((c) => c.name)
+);
 
 const allergenOptions = computed(() => {
   const merged = [...ALLERGEN_OPTIONS];
@@ -319,6 +339,23 @@ async function onCategoryAdded(newCat) {
     const result = await dishStore.addCategory(newCat);
     form.value.categoryId = (result && result.id) || newCat.id;
     toast.success(`已添加分类：${newCat.name}`);
+  } catch (e) {
+    toast.error(e.message || '添加分类失败');
+  }
+}
+
+function openAddCategoryFromPicker() {
+  showCategoryPickerVisible.value = false;
+  setTimeout(() => {
+    addCatVisible.value = true;
+  }, 260);
+}
+
+async function onAddCatConfirm(data) {
+  try {
+    const result = await dishStore.addCategory(data);
+    form.value.categoryId = (result && result.id) || data.id;
+    toast.success(`已添加分类：${data.name}`);
   } catch (e) {
     toast.error(e.message || '添加分类失败');
   }
