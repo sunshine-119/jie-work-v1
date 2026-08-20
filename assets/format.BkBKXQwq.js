@@ -1,0 +1,1 @@
+function t(t){const e=new Date(t),o=t=>String(t).padStart(2,"0");return`${e.getFullYear()}-${o(e.getMonth()+1)}-${o(e.getDate())} ${o(e.getHours())}:${o(e.getMinutes())}`}function e(e){const o=Date.now()-e,n=6e4,r=60*n,a=24*r;return o<n?"刚刚":o<r?`${Math.floor(o/n)}分钟前`:o<a?`${Math.floor(o/r)}小时前`:o<7*a?`${Math.floor(o/a)}天前`:t(e).slice(5,11)}export{t as f,e as r};
